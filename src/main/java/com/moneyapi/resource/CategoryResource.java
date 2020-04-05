@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -31,8 +34,11 @@ public class CategoryResource {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody Category category){
-        categoriesRepository.save(category);
+    public void create(@RequestBody Category category, HttpServletResponse response){
+        Category categoryCreated = categoriesRepository.save(category);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(categoryCreated.getId()).toUri();
+        response.setHeader("Location", uri.toASCIIString());
     }
 
 
