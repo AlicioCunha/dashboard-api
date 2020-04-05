@@ -23,7 +23,7 @@ public class CategoryResource {
     /* *** Exemplo: *** */
     @GetMapping("/listarTudo")
     public ResponseEntity<?> listarTudo() {
-    List<Category> categories = categoriesRepository.findAll();
+        List<Category> categories = categoriesRepository.findAll();
         return !categories.isEmpty() ? ResponseEntity.ok(categories) : ResponseEntity.noContent().build();
     }
 
@@ -33,18 +33,19 @@ public class CategoryResource {
     }
 
     @PostMapping
-    public ResponseEntity<Category> create(@RequestBody Category category, HttpServletResponse response){
+    public ResponseEntity<Category> create(@RequestBody Category category, HttpServletResponse response) {
         Category categoryCreated = categoriesRepository.save(category);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(categoryCreated.getId()).toUri();
         response.setHeader("Location", uri.toASCIIString());
 
-        return  ResponseEntity.created(uri).body(categoryCreated);
+        return ResponseEntity.created(uri).body(categoryCreated);
     }
-
 
     @GetMapping("/{id}")
-    public Category searchForId(@PathVariable Long id){
-        return categoriesRepository.findOne(id);
+    public ResponseEntity<Category> searchForId(@PathVariable Long id) {
+        Category searchedCategory = categoriesRepository.findOne(id);
+        return searchedCategory != null ? ResponseEntity.ok(searchedCategory) : ResponseEntity.notFound().build();
     }
+    
 }
