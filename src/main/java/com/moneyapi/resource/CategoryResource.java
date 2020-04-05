@@ -33,13 +33,18 @@ public class CategoryResource {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody Category category, HttpServletResponse response){
+    public ResponseEntity<Category> create(@RequestBody Category category, HttpServletResponse response){
         Category categoryCreated = categoriesRepository.save(category);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(categoryCreated.getId()).toUri();
         response.setHeader("Location", uri.toASCIIString());
+
+        return  ResponseEntity.created(uri).body(categoryCreated);
     }
 
 
+    @GetMapping("/{id}")
+    public Category searchForId(@PathVariable Long id){
+        return categoriesRepository.findOne(id);
+    }
 }
