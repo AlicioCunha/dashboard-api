@@ -3,10 +3,9 @@ package com.moneyapi.resource;
 import com.moneyapi.model.Category;
 import com.moneyapi.repository.CategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,4 +28,12 @@ public class CategoryResource {
     public List<Category> listAll() {
         return categoriesRepository.findAll();
     }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(@RequestBody Category category){
+        categoriesRepository.save(category);
+    }
+
+
 }
