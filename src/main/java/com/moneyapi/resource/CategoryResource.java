@@ -3,12 +3,12 @@ package com.moneyapi.resource;
 import com.moneyapi.model.Category;
 import com.moneyapi.repository.CategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class CategoryResource {
     }
 
     @PostMapping
-    public ResponseEntity<Category> create(@RequestBody Category category, HttpServletResponse response) {
+    public ResponseEntity<Category> create(@Valid @RequestBody Category category, HttpServletResponse response) {
         Category categoryCreated = categoriesRepository.save(category);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(categoryCreated.getId()).toUri();

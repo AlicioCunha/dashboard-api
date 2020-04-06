@@ -7,11 +7,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @ControllerAdvice
 public class MoneyExceptionHandler extends ResponseEntityExceptionHandler {
@@ -23,14 +28,22 @@ public class MoneyExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String invalidMessageUser = messageSource.getMessage("invalid.message", null, LocaleContextHolder.getLocale());
         String invalidMessageDeveloper = ex.getCause().toString();
-        return handleExceptionInternal(ex, new Erro(invalidMessageUser, invalidMessageDeveloper), headers, HttpStatus.BAD_REQUEST, request);
+        List<moneyErrorMessage> errorMessageList = Arrays.asList(new moneyErrorMessage(invalidMessageUser, invalidMessageDeveloper));
+
+        return handleExceptionInternal(ex, errorMessageList, headers, HttpStatus.BAD_REQUEST, request);
     }
 
-    public static class Erro {
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        List<moneyErrorMessage> errorMessageList = createdListMoneyErrorMessage(ex.getBindingResult());
+        return handleExceptionInternal(ex, errorMessageList, headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    public static class moneyErrorMessage {
         private String messageUser;
         private String messageDeveloper;
 
-        public Erro(String messageUser, String messageDeveloper) {
+        public moneyErrorMessage(String messageUser, String messageDeveloper) {
             this.messageUser = messageUser;
             this.messageDeveloper = messageDeveloper;
         }
@@ -42,5 +55,17 @@ public class MoneyExceptionHandler extends ResponseEntityExceptionHandler {
         public String getMessageDeveloper() {
             return messageDeveloper;
         }
+    }
+
+    private List<moneyErrorMessage> createdListMoneyErrorMessage(BindingResult bindingResult) {
+        List<moneyErrorMessage> errorMessages = new ArrayList<>();
+
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            String userMessage = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+            String devMessage = fieldError.toString();
+            errorMessages.add(new moneyErrorMessage(userMessage, devMessage));
+        }
+
+        return errorMessages;
     }
 }
