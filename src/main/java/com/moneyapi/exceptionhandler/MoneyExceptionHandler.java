@@ -73,7 +73,13 @@ public class MoneyExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({EmptyResultDataAccessException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public void handleEmptyResultDataAccessException(){
+    public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request){
+
+        String invalidMessageUser = messageSource.getMessage("recurso.nao-encontrado", null, LocaleContextHolder.getLocale());
+        String invalidMessageDeveloper = ex.toString();
+        List<moneyErrorMessage> errorMessageList = Arrays.asList(new moneyErrorMessage(invalidMessageUser, invalidMessageDeveloper));
+
+        return handleExceptionInternal(ex, errorMessageList, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+
     }
 }
