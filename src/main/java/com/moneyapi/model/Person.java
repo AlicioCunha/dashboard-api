@@ -14,6 +14,7 @@ public class Person {
     @NotNull
     private String name;
 
+    @NotNull
     private Boolean active;
 
     @Embedded
