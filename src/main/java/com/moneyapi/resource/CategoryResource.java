@@ -1,8 +1,11 @@
 package com.moneyapi.resource;
 
+import com.moneyapi.event.ResourceCreatedEvent;
 import com.moneyapi.model.Category;
 import com.moneyapi.repository.CategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -18,6 +21,9 @@ public class CategoryResource {
 
     @Autowired
     private CategoriesRepository categoriesRepository;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     //Uma sugestao para um retorno quando no possuir nenhum registro na tabela. o correto é utilizar o metodoo abaixo
     /* *** Exemplo: *** */
@@ -35,11 +41,8 @@ public class CategoryResource {
     @PostMapping
     public ResponseEntity<Category> create(@Valid @RequestBody Category category, HttpServletResponse response) {
         Category categoryCreated = categoriesRepository.save(category);
-
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(categoryCreated.getId()).toUri();
-        response.setHeader("Location", uri.toASCIIString());
-
-        return ResponseEntity.created(uri).body(categoryCreated);
+        publisher.publishEvent(new ResourceCreatedEvent(this, response, categoryCreated.getId()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryCreated);
     }
 
     @GetMapping("/{id}")

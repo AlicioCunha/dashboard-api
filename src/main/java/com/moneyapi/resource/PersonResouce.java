@@ -1,8 +1,11 @@
 package com.moneyapi.resource;
 
+import com.moneyapi.event.ResourceCreatedEvent;
 import com.moneyapi.model.Person;
 import com.moneyapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,6 +22,9 @@ public class PersonResouce {
     @Autowired
     private PersonRepository personRepository;
 
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
     @GetMapping
     public List<Person> listaAll() {
         return personRepository.findAll();
@@ -33,8 +39,7 @@ public class PersonResouce {
     @PostMapping
     public ResponseEntity<Person> create(@Valid @RequestBody Person person, HttpServletResponse response) {
         Person personCreated = personRepository.save(person);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(personCreated.getId()).toUri();
-        response.setHeader("Location", uri.toASCIIString());
-        return ResponseEntity.created(uri).body(personCreated);
+        publisher.publishEvent(new ResourceCreatedEvent(this, response, personCreated.getId()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(personCreated);
     }
 }
