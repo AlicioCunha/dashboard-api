@@ -47,12 +47,19 @@ public class PersonResouce {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id){
+    public void delete(@PathVariable Long id) {
         personRepository.delete(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Person> update(@PathVariable Long id, @Valid @RequestBody Person person){
+    public ResponseEntity<Person> update(@PathVariable Long id, @Valid @RequestBody Person person) {
         return ResponseEntity.ok(personService.updateService(id, person));
     }
+
+    @PutMapping("/{id}/active")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateActive(@PathVariable Long id, @RequestBody Boolean active) {
+        personService.updateRecordStatus(id, active);
+    }
+
 }

@@ -13,12 +13,23 @@ public class PersonService {
     @Autowired
     private PersonRepository personRepository;
 
-    public Person updateService(Long id, Person person){
+    public void updateRecordStatus(Long id, Boolean active) {
+        Person searchedPerson = findPersonById(id);
+        searchedPerson.setActive(active);
+        personRepository.save(searchedPerson);
+    }
+
+    public Person updateService(Long id, Person person) {
+        Person searchedPerson = findPersonById(id);
+        BeanUtils.copyProperties(person, searchedPerson, "id");
+        return personRepository.save(searchedPerson);
+    }
+
+    private Person findPersonById(Long id) {
         Person searchedPerson = personRepository.findOne(id);
-        if(searchedPerson == null){
+        if (searchedPerson == null) {
             throw new EmptyResultDataAccessException(1);
         }
-        BeanUtils.copyProperties(person, searchedPerson, "id");
-       return personRepository.save(searchedPerson);
+        return searchedPerson;
     }
 }
