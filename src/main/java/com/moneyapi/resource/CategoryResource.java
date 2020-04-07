@@ -8,11 +8,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -50,5 +48,5 @@ public class CategoryResource {
         Category searchedCategory = categoriesRepository.findOne(id);
         return searchedCategory != null ? ResponseEntity.ok(searchedCategory) : ResponseEntity.notFound().build();
     }
-    
+
 }

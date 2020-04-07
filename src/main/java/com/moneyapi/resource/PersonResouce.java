@@ -3,7 +3,7 @@ package com.moneyapi.resource;
 import com.moneyapi.event.ResourceCreatedEvent;
 import com.moneyapi.model.Person;
 import com.moneyapi.repository.PersonRepository;
-import org.springframework.beans.BeanUtils;
+import com.moneyapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -23,6 +23,9 @@ public class PersonResouce {
 
     @Autowired
     private ApplicationEventPublisher publisher;
+
+    @Autowired
+    PersonService personService;
 
     @GetMapping
     public List<Person> listaAll() {
@@ -48,12 +51,8 @@ public class PersonResouce {
         personRepository.delete(id);
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<Person> update(@PathVariable Long id, @Valid @RequestBody Person person){
-        Person searchedPerson = personRepository.findOne(id);
-        BeanUtils.copyProperties(person, searchedPerson, "id");
-        personRepository.save(searchedPerson);
-        return ResponseEntity.ok(searchedPerson);
+        return ResponseEntity.ok(personService.updateService(id, person));
     }
 }
