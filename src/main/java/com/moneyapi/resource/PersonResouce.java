@@ -3,16 +3,15 @@ package com.moneyapi.resource;
 import com.moneyapi.event.ResourceCreatedEvent;
 import com.moneyapi.model.Person;
 import com.moneyapi.repository.PersonRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -47,5 +46,14 @@ public class PersonResouce {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id){
         personRepository.delete(id);
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Person> update(@PathVariable Long id, @Valid @RequestBody Person person){
+        Person searchedPerson = personRepository.findOne(id);
+        BeanUtils.copyProperties(person, searchedPerson, "id");
+        personRepository.save(searchedPerson);
+        return ResponseEntity.ok(searchedPerson);
     }
 }
