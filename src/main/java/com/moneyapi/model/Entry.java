@@ -3,6 +3,7 @@ package com.moneyapi.model;
 import com.moneyapi.enums.EntryType;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -14,25 +15,31 @@ public class  Entry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    @NotNull
     private String description;
 
+    @NotNull
     @Column(name = "VALUE_DATE")
     private LocalDate valueDate;
 
     @Column(name = "DUE_DATE")
     private LocalDate dueDate;
 
+    @NotNull
     private BigDecimal value;
+
     private String observation;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private EntryType entryType;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "ID_CATEGORY")
     private Category category;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "ID_PERSON")
     private Person person;
