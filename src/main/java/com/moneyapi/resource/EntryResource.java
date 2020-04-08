@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/entries")
-public class EntreyResource {
+public class EntryResource {
 
     @Autowired
     private EntryRepository entryRepository;
