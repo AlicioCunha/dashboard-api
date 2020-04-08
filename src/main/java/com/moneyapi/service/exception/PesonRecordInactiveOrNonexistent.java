@@ -1,4 +1,4 @@
 package com.moneyapi.service.exception;
 
-public class PesonRecordInactiveOrNonexistent {
+public class PesonRecordInactiveOrNonexistent extends RuntimeException {
 }

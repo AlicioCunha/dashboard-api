@@ -1,5 +1,7 @@
 package com.moneyapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -50,6 +52,12 @@ public class Person {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    @JsonIgnore
+    @Transient
+    public boolean isInativo(){
+        return !this.active;
     }
 
     @Override
