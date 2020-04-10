@@ -5,6 +5,7 @@ import com.moneyapi.event.ResourceCreatedEvent;
 import com.moneyapi.exceptionhandler.MoneyExceptionHandler;
 import com.moneyapi.model.Entry;
 import com.moneyapi.repository.EntryRepository;
+import com.moneyapi.repository.filter.EntryFilter;
 import com.moneyapi.service.EntryService;
 import com.moneyapi.service.exception.PesonRecordInactiveOrNonexistent;
 import org.aspectj.bridge.Message;
@@ -38,9 +39,14 @@ public class EntryResource {
     @Autowired
     private MessageSource messageSource;
 
-    @GetMapping
+    /*@GetMapping
     public List<Entry> listAll() {
         return entryRepository.findAll();
+    }*/
+
+    @GetMapping
+    public List<Entry> listAllMetaModel(EntryFilter entryFilter) {
+        return entryRepository.filter(entryFilter);
     }
 
     @GetMapping("/{id}")
