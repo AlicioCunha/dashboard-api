@@ -8,12 +8,10 @@ import com.moneyapi.repository.EntryRepository;
 import com.moneyapi.repository.filter.EntryFilter;
 import com.moneyapi.service.EntryService;
 import com.moneyapi.service.exception.PesonRecordInactiveOrNonexistent;
-import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,15 +37,25 @@ public class EntryResource {
     @Autowired
     private MessageSource messageSource;
 
-    /*@GetMapping
+    /*
+    Primeiro metodo de listagem sem filtro
+    @GetMapping
     public List<Entry> listAll() {
         return entryRepository.findAll();
     }*/
 
+    // Metodos com filtro customizado
     @GetMapping
     public List<Entry> listAllMetaModel(EntryFilter entryFilter) {
         return entryRepository.filter(entryFilter);
     }
+
+    /*
+    //Pesquisa paginada
+    @GetMapping
+    public Page<Entry> listAllMetaModel(EntryFilter entryFilter, Pageable pageable) {
+        return entryRepository.filter(entryFilter, pageable);
+    }*/
 
     @GetMapping("/{id}")
     public ResponseEntity<Entry> buscarPeloCodigo(@PathVariable Long id) {
@@ -69,6 +77,12 @@ public class EntryResource {
         String invalidMessageDeveloper = ex.toString();
         List<MoneyExceptionHandler.moneyErrorMessage> errorMessageList = Arrays.asList(new MoneyExceptionHandler.moneyErrorMessage(invalidMessageUser, invalidMessageDeveloper));
         return ResponseEntity.badRequest().body(errorMessageList);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable Long id) {
+        entryRepository.delete(id);
     }
 
 }

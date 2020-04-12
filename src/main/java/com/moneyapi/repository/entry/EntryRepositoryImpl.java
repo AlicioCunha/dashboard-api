@@ -35,6 +35,7 @@ public class EntryRepositoryImpl implements EntryRepositoryQuery {
             query.where(qEntry.valueDate.loe(entryFilter.getValueDateUntil()));
         }
 
-        return query.fetch();
+        return  query.fetch();
     }
+
 }
