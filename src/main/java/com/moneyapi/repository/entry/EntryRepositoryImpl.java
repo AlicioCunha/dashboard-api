@@ -2,26 +2,21 @@ package com.moneyapi.repository.entry;
 
 import com.moneyapi.model.Entry;
 import com.moneyapi.model.QEntry;
+import com.moneyapi.repository.common.RepositoryBaseBean;
 import com.moneyapi.repository.filter.EntryFilter;
 import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
-public class EntryRepositoryImpl implements EntryRepositoryQuery {
-
-    @PersistenceContext
-    private EntityManager entityManager;
+public class EntryRepositoryImpl extends RepositoryBaseBean implements EntryRepositoryQuery {
 
     @Override
     public List<Entry> filter(EntryFilter entryFilter) {
 
         QEntry qEntry = QEntry.entry;
 
-        JPAQuery query = new JPAQueryFactory(entityManager).from(qEntry);
+        JPAQuery query = select(qEntry).from(qEntry);
 
         if (!StringUtils.isEmpty(entryFilter.getDescription())) {
             query.where(qEntry.description.containsIgnoreCase(entryFilter.getDescription()));

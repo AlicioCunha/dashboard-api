@@ -1,9 +1,9 @@
 package com.moneyapi.repository;
 
 import com.moneyapi.model.Category;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface CategoriesRepository extends JpaRepository<Category, Long> {
+public interface CategoriesRepository extends PagingAndSortingRepository<Category, Long> {
 
 
 }

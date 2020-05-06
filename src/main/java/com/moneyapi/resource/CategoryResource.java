@@ -5,6 +5,7 @@ import com.moneyapi.model.Category;
 import com.moneyapi.repository.CategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +26,12 @@ public class CategoryResource {
 
     //Uma sugestao para um retorno quando no possuir nenhum registro na tabela. o correto é utilizar o metodoo abaixo
     /* *** Exemplo: *** */
-    @GetMapping("/listarTudo")
+/*    @GetMapping("/listarTudo")
     public ResponseEntity<?> listarTudo() {
         List<Category> categories = categoriesRepository.findAll();
         return !categories.isEmpty() ? ResponseEntity.ok(categories) : ResponseEntity.noContent().build();
     }
+
 
     @GetMapping
     public List<Category> listAll() {
@@ -47,6 +49,13 @@ public class CategoryResource {
     public ResponseEntity<Category> searchForId(@PathVariable Long id) {
         Category searchedCategory = categoriesRepository.findOne(id);
         return searchedCategory != null ? ResponseEntity.ok(searchedCategory) : ResponseEntity.notFound().build();
+    }
+
+*/
+
+    @GetMapping
+    public ResponseEntity<?> listAllPageable(Pageable pageable) {
+        return new ResponseEntity<>(categoriesRepository.findAll(pageable), HttpStatus.OK);
     }
 
 }
