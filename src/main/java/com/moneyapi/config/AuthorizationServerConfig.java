@@ -25,9 +25,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .withClient("angular")
                 .secret("@ngul@r0")
                 .scopes("read", "write")
-                .authorizedGrantTypes("password")
-                .accessTokenValiditySeconds(1800);
-        //tempo em minutos de validade do token ai será de 5 minutos
+                .authorizedGrantTypes("password", "refresh_token")
+                //tempo em minutos de validade do token ai será de 5 minutos
+                .accessTokenValiditySeconds(20)
+                // tempo de refresh para o manter o usuario logado
+                .refreshTokenValiditySeconds(3600 * 24);
     }
 
     @Override
@@ -35,6 +37,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoints
                 .tokenStore(tokenStore())
                 .accessTokenConverter(accessTokenConverter())
+                .reuseRefreshTokens(false)
                 .authenticationManager(authenticationManager);
     }
 
