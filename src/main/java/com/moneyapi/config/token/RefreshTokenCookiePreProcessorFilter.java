@@ -26,7 +26,7 @@ public class RefreshTokenCookiePreProcessorFilter implements Filter {
         /**
          faz a verificacao para ver se tem o cookie e grant_type para fazer a substituicao dos valores
          */
-        if ("oauth/token".equalsIgnoreCase(req.getRequestURI())
+        if ("/oauth/token".equalsIgnoreCase(req.getRequestURI())
                 && "refresh_token".equals(req.getParameter("grant_type"))
                 && req.getCookies() != null) {
 
