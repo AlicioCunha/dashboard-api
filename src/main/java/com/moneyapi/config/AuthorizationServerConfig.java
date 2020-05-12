@@ -21,15 +21,30 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+
+        /*
+            Aqui fica determinado as permissoes de cada aplicacao
+            no exemplo abaixo teremos uma mobile e outro cliente navegador
+         */
+
         clients.inMemory()
-                .withClient("angular")
-                .secret("@ngul@r0")
-                .scopes("read", "write")
-                .authorizedGrantTypes("password", "refresh_token")
-                //tempo em minutos de validade do token ai será de 5 minutos
-                .accessTokenValiditySeconds(20)
-                // tempo de refresh para o manter o usuario logado
-                .refreshTokenValiditySeconds(3600 * 24);
+                    .withClient("angular")
+                    .secret("@ngul@r0")
+                    .scopes("read", "write")
+                    .authorizedGrantTypes("password", "refresh_token")
+                    //tempo em minutos de validade do token ai será de 5 minutos
+                    .accessTokenValiditySeconds(20)
+                    // tempo de refresh para o manter o usuario logado
+                    .refreshTokenValiditySeconds(3600 * 24)
+                .and()
+                    .withClient("mobile")
+                    .secret("m0b1l3")
+                    .scopes("read")
+                    .authorizedGrantTypes("password", "refresh_token")
+                    //tempo em minutos de validade do token ai será de 5 minutos
+                    .accessTokenValiditySeconds(20)
+                    // tempo de refresh para o manter o usuario logado
+                    .refreshTokenValiditySeconds(3600 * 24);
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +24,8 @@ public class CategoryResource {
     @Autowired
     private ApplicationEventPublisher publisher;
 
-    //Uma sugestao para um retorno quando no possuir nenhum registro na tabela. o correto é utilizar o metodoo abaixo
+    //Uma sugestao para um retorno quando no possuir nenhum registro na tabela.
+    // o correto é utilizar o metodoo abaixo
     /* *** Exemplo: *** */
     @GetMapping("/listarTudo")
     public ResponseEntity<?> listarTudo() {
@@ -31,11 +33,13 @@ public class CategoryResource {
         return !categories.isEmpty() ? ResponseEntity.ok(categories) : ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORY') and #oauth2.hasScope('read')")
     @GetMapping
     public List<Category> listAll() {
         return categoriesRepository.findAll();
     }
 
+    @PreAuthorize("hasAuthority('ROLE_REGISTER_CATEGORY') and #oauth2.hasScope('write')")
     @PostMapping
     public ResponseEntity<Category> create(@Valid @RequestBody Category category, HttpServletResponse response) {
         Category categoryCreated = categoriesRepository.save(category);
@@ -43,6 +47,7 @@ public class CategoryResource {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryCreated);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORY') and #oauth2.hasScope('read')")
     @GetMapping("/{id}")
     public ResponseEntity<Category> searchForId(@PathVariable Long id) {
         Category searchedCategory = categoriesRepository.findOne(id);
