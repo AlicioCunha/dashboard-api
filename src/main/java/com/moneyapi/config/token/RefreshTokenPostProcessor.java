@@ -1,6 +1,8 @@
 package com.moneyapi.config.token;
 
+import com.moneyapi.config.property.ApiProperty;
 import org.eclipse.jdt.internal.compiler.problem.AbortCompilationUnit;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -19,6 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
 public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2AccessToken> {
+
+    @Autowired
+    private ApiProperty property;
 
     /***
      *
@@ -81,7 +86,7 @@ public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Acces
     private void addRefreshTokenOnCookie(String refreshToken, HttpServletRequest req, HttpServletResponse resp) {
         Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setHttpOnly(true); // so será acessivel em http
-        cookie.setSecure(false); // TODO : mudar para true em pr oducao será feito deploy em HTTPS
+        cookie.setSecure(property.getSecurity().isEnableHttps());
         cookie.setPath(req.getContextPath() + "/oauth/token");
         cookie.setMaxAge(60*60*24); // expira em 30 dias
         resp.addCookie(cookie);

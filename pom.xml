@@ -117,6 +117,14 @@
             <artifactId>spring-security-jwt</artifactId>
         </dependency>
 
+
+        <!-- Dependencias para configurar os profiles no applicacao -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
     <build>
