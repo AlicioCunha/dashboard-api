@@ -2,6 +2,7 @@ package com.moneyapi.security;
 
 
 import com.moneyapi.model.User;
+import com.moneyapi.model.UserSytem;
 import com.moneyapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +29,7 @@ public class AppUserDetailsService implements UserDetailsService {
         Optional<User> userOptional = userRepository.findByEmail(email);
         User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("Usuario e/ou senha não informado"));
 
-        return new org.springframework.security.core.userdetails.User(email, user.getPassword(), getPermission(user));
+        return new UserSytem(user, getPermission(user));
     }
 
     private Collection<? extends GrantedAuthority> getPermission(User user) {
